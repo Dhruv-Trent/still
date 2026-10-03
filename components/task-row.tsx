@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef } from "react";
 import { DateTime } from "luxon";
 import {
   Check,
@@ -36,7 +37,39 @@ export default function TaskRow({
   onMove,
   onDelete,
 }: Props) {
+  const actionsRef = useRef<HTMLDetailsElement>(null);
   const date = t.scheduled_at || t.due_at;
+
+  function closeActions() {
+    actionsRef.current?.removeAttribute("open");
+  }
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      const actions = actionsRef.current;
+      if (
+        actions?.open &&
+        event.target instanceof Node &&
+        !actions.contains(event.target)
+      ) {
+        actions.removeAttribute("open");
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      const actions = actionsRef.current;
+      if (event.key === "Escape" && actions?.open) {
+        actions.removeAttribute("open");
+        actions.querySelector("summary")?.focus();
+      }
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
   return (
     <article
       className={`task-row ${t.status === "completed" ? "completed" : ""}`}
@@ -80,30 +113,64 @@ export default function TaskRow({
           {priorityLabels[t.priority]}
         </span>
       )}
-      <details className="task-actions">
+      <details ref={actionsRef} className="task-actions">
         <summary aria-label={`Actions for ${t.title}`}>
           <MoreHorizontal size={20} />
         </summary>
         <div>
-          <button onClick={onEdit}>Edit task</button>
-          <button onClick={onDuplicate}>
+          <button
+            onClick={() => {
+              closeActions();
+              onEdit();
+            }}
+          >
+            Edit task
+          </button>
+          <button
+            onClick={() => {
+              closeActions();
+              onDuplicate();
+            }}
+          >
             <Copy size={14} />
             Duplicate
           </button>
           {["Today", "Tomorrow"].map((label, i) => (
-            <button key={label} onClick={() => onReschedule(i)}>
+            <button
+              key={label}
+              onClick={() => {
+                closeActions();
+                onReschedule(i);
+              }}
+            >
               {label}
             </button>
           ))}
-          <button onClick={() => onMove(-1)}>
+          <button
+            onClick={() => {
+              closeActions();
+              onMove(-1);
+            }}
+          >
             <ArrowUp size={14} />
             Move up
           </button>
-          <button onClick={() => onMove(1)}>
+          <button
+            onClick={() => {
+              closeActions();
+              onMove(1);
+            }}
+          >
             <ArrowDown size={14} />
             Move down
           </button>
-          <button className="danger" onClick={onDelete}>
+          <button
+            className="danger"
+            onClick={() => {
+              closeActions();
+              onDelete();
+            }}
+          >
             <Trash2 size={14} />
             Delete
           </button>

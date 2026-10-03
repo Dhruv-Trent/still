@@ -27,6 +27,22 @@ test("workspace task editor, completion, lists, calendar, themes and accessibili
   if (await page.getByLabel("Open navigation").isVisible())
     await page.getByLabel("Open navigation").click();
   await page.getByRole("button", { name: "All tasks", exact: true }).click();
+  if (testInfo.project.name === "desktop") {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.getByLabel("Still — scroll to top").click();
+    await expect
+      .poll(() => page.evaluate(() => window.scrollY))
+      .toBeLessThan(2);
+  }
+  const firstTask = page.getByLabel("Actions for Finish the project proposal");
+  await firstTask.click();
+  await expect(
+    page.getByRole("button", { name: "Edit task", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("heading", { name: "All tasks", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Edit task", exact: true }),
+  ).toBeHidden();
   const add = page.getByRole("button", { name: /^Add a task/ });
   await add.last().click();
   await page.getByLabel("Task title").fill("Component journey");

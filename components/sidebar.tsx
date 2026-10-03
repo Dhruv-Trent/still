@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import {
   Check,
   Inbox,
@@ -52,12 +51,20 @@ export default function Sidebar({
       aria-hidden={compact && !mobile}
       className={`sidebar ${mobile ? "open" : ""}`}
     >
-      <Link href="/" className="brand">
+      <a
+        href="#main-content"
+        className="brand"
+        aria-label="Still — scroll to top"
+        onClick={(event) => {
+          event.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      >
         <span className="brandmark">
           <Check size={23} />
         </span>
         still<span className="brand-dot">.</span>
-      </Link>
+      </a>
       <button className="quick-add primary" onClick={() => onAdd()}>
         <Plus size={19} />
         Add a task<kbd>N</kbd>
