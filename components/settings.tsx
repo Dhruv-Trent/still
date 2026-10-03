@@ -323,6 +323,13 @@ export default function Settings({
         </p>
       )}
       <section>
+        <h2>Need a hand?</h2>
+        <p>
+          For account, privacy, or support questions, email{" "}
+          <a href="mailto:support@stilltodo.app">support@stilltodo.app</a>.
+        </p>
+      </section>
+      <section>
         <h2>Make it feel at home.</h2>
         <p>
           Install Still from your browser’s install menu. On iPhone or iPad:

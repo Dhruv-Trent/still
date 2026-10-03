@@ -179,6 +179,7 @@ export default function Home() {
         <span>A little clarity, every day.</span>
         <Link href="/privacy">Privacy</Link>
         <Link href="/terms">Terms</Link>
+        <a href="mailto:support@stilltodo.app">Support</a>
       </footer>
     </div>
   );
